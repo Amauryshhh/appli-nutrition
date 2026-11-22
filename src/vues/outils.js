@@ -55,3 +55,18 @@ export function formaterReste(reste) {
 export function formaterTotal(t) {
   return `${Math.round(t.kcal)} kcal · P ${Math.round(t.proteines)} · G ${Math.round(t.glucides)} · L ${Math.round(t.lipides)}`;
 }
+
+// ---- Nettoyage quand on quitte un écran ----
+// Un écran qui utilise une ressource (ex. la caméra) enregistre ici de quoi la libérer.
+// main.js appelle quitterVue() à chaque changement d'onglet.
+let nettoyage = null;
+
+export function surDepart(fonction) {
+  nettoyage = fonction;
+}
+
+export function quitterVue() {
+  const f = nettoyage;
+  nettoyage = null;
+  f?.();
+}

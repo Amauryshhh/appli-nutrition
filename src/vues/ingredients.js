@@ -11,7 +11,9 @@ import {
   validerIngredient,
   ecartCalories,
 } from '../calculs/ingredients.js';
+import { nettoyerCodeBarres } from '../calculs/openfoodfacts.js';
 import { lireNombre, formaterNombre, echapper, html } from './outils.js';
+import { ouvrirScan } from './scan.js';
 
 const FILTRES = [['tous', 'Tous'], ['favoris', '★ Favoris'], ...CATEGORIES, ['exclus', 'Exclus']];
 
@@ -40,7 +42,10 @@ export async function afficherIngredients(conteneur) {
       ${FILTRES.map(([v, l]) => `<button type="button" data-filtre="${v}" class="${v === etat.filtre ? 'actif' : ''}">${l}</button>`).join('')}
     </div>
     <ul class="liste"></ul>
-    <button type="button" class="bouton-flottant">+ Ajouter</button>
+    <div class="actions-flottantes">
+      <button type="button" class="bouton-flottant secondaire" id="scanner">Scanner</button>
+      <button type="button" class="bouton-flottant" id="ajouter">+ Ajouter</button>
+    </div>
   </section>`);
   conteneur.append(vue);
 
@@ -94,24 +99,35 @@ export async function afficherIngredients(conteneur) {
     ouvrirFiche(conteneur, id);
   });
 
-  vue.querySelector('.bouton-flottant').addEventListener('click', () => ouvrirFiche(conteneur, null));
+  vue.querySelector('#ajouter').addEventListener('click', () => ouvrirFiche(conteneur, null));
+  vue.querySelector('#scanner').addEventListener('click', () => ouvrirScan(conteneur));
 
   rafraichir();
 }
 
 // ======================= Fiche (ajout / modification) =======================
 
-async function ouvrirFiche(conteneur, id) {
-  // Nouvel ingrédient : source « manuel ». Modification : on part de la fiche existante.
-  const ing = id ? await chargerIngredient(id) : { source: 'manuel', favori: false, exclu: false };
+/**
+ * Fiche d'un ingrédient.
+ * - id : modifier un ingrédient existant ;
+ * - sinon nouvel ingrédient, éventuellement pré-rempli (options.initial, ex. depuis Open Food Facts) ;
+ * - options.message : texte affiché sous le titre (ex. « Produit inconnu… »).
+ */
+export async function ouvrirFiche(conteneur, id, { initial = {}, message = '' } = {}) {
+  // Nouvel ingrédient : source « manuel » par défaut. Modification : on part de la fiche existante.
+  const ing = id
+    ? await chargerIngredient(id)
+    : { source: 'manuel', favori: false, exclu: false, ...initial };
   const nouveau = !id;
+  const titre = !nouveau ? 'Modifier' : ing.source === 'off' ? 'Produit trouvé' : 'Nouvel ingrédient';
 
   conteneur.innerHTML = '';
   window.scrollTo(0, 0);
 
   const vue = html(`<section>
     <button type="button" class="retour">← Retour</button>
-    <h1>${nouveau ? 'Nouvel ingrédient' : 'Modifier'}</h1>
+    <h1>${titre}</h1>
+    ${message ? `<p class="info">${echapper(message)}</p>` : ''}
     <form class="formulaire" autocomplete="off" novalidate>
       <label for="nom">Nom</label>
       <input id="nom" name="nom" type="text" value="${echapper(ing.nom)}" placeholder="ex. Riz basmati" />
@@ -135,6 +151,9 @@ async function ouvrirFiche(conteneur, id) {
         <input id="prixKg" name="prixKg" type="text" inputmode="decimal" value="${formaterNombre(ing.prixKg)}" />
       </div>
 
+      <label for="codeBarres">Code-barres <small>(facultatif)</small></label>
+      <input id="codeBarres" name="codeBarres" type="text" inputmode="numeric" value="${echapper(ing.codeBarres)}" />
+
       ${nouveau ? '' : `
         <label class="case">
           <input type="checkbox" id="exclu" ${ing.exclu ? 'checked' : ''} />
@@ -157,6 +176,7 @@ async function ouvrirFiche(conteneur, id) {
     const resultat = { ...ing, nom: form.nom.value.trim() };
     for (const [cle] of CHAMPS) resultat[cle] = lireNombre(form[cle].value);
     resultat.prixKg = lireNombre(form.prixKg.value);
+    resultat.codeBarres = nettoyerCodeBarres(form.codeBarres.value) || undefined;
     if (!nouveau) resultat.exclu = vue.querySelector('#exclu').checked;
     return resultat;
   }

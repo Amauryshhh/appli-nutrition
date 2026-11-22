@@ -4,6 +4,7 @@ import { afficherProfil } from './vues/profil.js';
 import { afficherParametres } from './vues/parametres.js';
 import { afficherIngredients } from './vues/ingredients.js';
 import { afficherJour } from './vues/jour.js';
+import { quitterVue } from './vues/outils.js';
 
 // Service worker (fourni par vite-plugin-pwa) : mode hors ligne + mises à jour automatiques.
 if ('serviceWorker' in navigator) registerSW({ immediate: true });
@@ -19,6 +20,7 @@ const conteneur = document.getElementById('vue');
 const boutons = document.querySelectorAll('.onglets button');
 
 function ouvrir(nom) {
+  quitterVue(); // libère la caméra si on quitte l'écran de scan
   boutons.forEach((b) => b.classList.toggle('actif', b.dataset.onglet === nom));
   conteneur.innerHTML = '';
   window.scrollTo(0, 0);
