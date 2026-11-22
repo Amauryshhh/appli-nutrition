@@ -31,3 +31,27 @@ export function html(chaine) {
   t.innerHTML = chaine.trim();
   return t.content.firstElementChild;
 }
+
+/**
+ * Texte « reste à manger » : « 850 kcal · 40 g P · 95 g G · 20 g L ».
+ * Une valeur négative (objectif dépassé) s'affiche « 120 kcal en trop », en rouge.
+ */
+export function formaterReste(reste) {
+  const morceau = (valeur, unite) => {
+    const n = Math.round(valeur);
+    return n < 0
+      ? `<span class="depasse">${-n} ${unite} en trop</span>`
+      : `<span>${n} ${unite}</span>`;
+  };
+  return [
+    morceau(reste.kcal, 'kcal'),
+    morceau(reste.proteines, 'g P'),
+    morceau(reste.glucides, 'g G'),
+    morceau(reste.lipides, 'g L'),
+  ].join(' · ');
+}
+
+/** Résumé court d'un total : « 515 kcal · P 43 · G 78 · L 4 ». */
+export function formaterTotal(t) {
+  return `${Math.round(t.kcal)} kcal · P ${Math.round(t.proteines)} · G ${Math.round(t.glucides)} · L ${Math.round(t.lipides)}`;
+}

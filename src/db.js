@@ -1,5 +1,5 @@
 import Dexie from 'dexie';
-import { PARAMETRES_DEFAUT } from './calculs/objectifs.js';
+import { PARAMETRES_DEFAUT, calculerObjectifs } from './calculs/objectifs.js';
 
 // Base IndexedDB stockée sur le téléphone.
 export const db = new Dexie('nutrition');
@@ -106,4 +106,10 @@ export function enregistrerRepas(repas) {
 
 export function supprimerRepas(id) {
   return db.journal.delete(id);
+}
+
+/** Objectifs du jour calculés depuis le profil et les paramètres (null si profil incomplet). */
+export async function chargerObjectifs() {
+  const [profil, params] = await Promise.all([chargerProfil(), chargerParametres()]);
+  return calculerObjectifs(profil, params);
 }

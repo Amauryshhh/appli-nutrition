@@ -345,3 +345,77 @@ select:focus {
   color: #c62828;
   border-color: #c62828;
 }
+
+/* ---- Composer un repas ---- */
+.deux-colonnes button {
+  flex: 1 1 45%;
+}
+.lignes-repas {
+  list-style: none;
+  margin: 16px 0 10px;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+.lignes-repas li {
+  display: grid;
+  grid-template-columns: 1fr 72px auto 44px;
+  grid-template-areas:
+    'nom nom nom retirer'
+    'kcal grammes unite retirer';
+  align-items: center;
+  gap: 4px 8px;
+  background: var(--carte);
+  border-radius: 14px;
+  padding: 10px 6px 10px 14px;
+}
+.lignes-repas .nom {
+  grid-area: nom;
+  font-weight: 600;
+}
+.lignes-repas .kcal-ligne {
+  grid-area: kcal;
+  color: var(--gris);
+  font-size: 0.9rem;
+}
+.lignes-repas .grammes {
+  grid-area: grammes;
+  min-height: 44px;
+  padding: 8px;
+  text-align: center;
+}
+.lignes-repas .unite {
+  grid-area: unite;
+}
+.retirer {
+  grid-area: retirer;
+  width: 44px;
+  height: 44px;
+  border: none;
+  background: none;
+  font-size: 1.2rem;
+  color: var(--gris);
+}
+.resultats {
+  padding-bottom: 0;
+}
+.resultats .plus {
+  width: 52px;
+  text-align: center;
+  font-size: 1.6rem;
+  color: var(--vert);
+}
+.totaux {
+  margin-top: 16px;
+  display: grid;
+  gap: 6px;
+}
+.depasse {
+  color: #c62828;
+  font-weight: 600;
+}
+
+/* L'attribut « hidden » doit toujours masquer, même si une classe impose display: grid/flex */
+[hidden] {
+  display: none !important;
+}
