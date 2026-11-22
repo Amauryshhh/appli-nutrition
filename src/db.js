@@ -113,3 +113,8 @@ export async function chargerObjectifs() {
   const [profil, params] = await Promise.all([chargerProfil(), chargerParametres()]);
   return calculerObjectifs(profil, params);
 }
+
+/** Ingrédient déjà enregistré avec ce code-barres (ou undefined). */
+export function trouverParCodeBarres(code) {
+  return db.ingredients.where('codeBarres').equals(code).first();
+}
