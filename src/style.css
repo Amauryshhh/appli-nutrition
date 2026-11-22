@@ -1,9 +1,13 @@
-/* Mobile d'abord : grosses tailles, marges pour l'encoche de l'iPhone. */
+/* Mobile d'abord : gros boutons, marges pour l'encoche et la barre du bas de l'iPhone. */
 :root {
   --vert: #2e7d32;
+  --vert-clair: #e3f0e3;
   --fond: #f4f7f2;
+  --carte: #ffffff;
   --texte: #1b1f1a;
-  --rouge: #c62828;
+  --gris: #5f6b5d;
+  --bordure: #d5ddd2;
+  --hauteur-onglets: 64px;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   color: var(--texte);
   background: var(--fond);
@@ -15,41 +19,164 @@
 
 body {
   margin: 0;
-  padding: env(safe-area-inset-top) 16px env(safe-area-inset-bottom);
-  min-height: 100vh;
+  /* place en bas pour la barre d'onglets */
+  padding: env(safe-area-inset-top) 16px
+    calc(var(--hauteur-onglets) + env(safe-area-inset-bottom) + 24px);
 }
 
 h1 {
   color: var(--vert);
-  font-size: 2rem;
-  margin: 24px 0 4px;
+  font-size: 1.8rem;
+  margin: 20px 0 16px;
 }
 
-.sous-titre {
-  font-size: 1.1rem;
-  margin: 0 0 24px;
+h2 {
+  font-size: 1.05rem;
+  margin: 20px 0 4px;
+  color: var(--gris);
 }
 
-.verifs {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+.note {
+  color: var(--gris);
+  font-size: 0.95rem;
+}
+
+/* ---- Carte des objectifs ---- */
+.carte {
+  background: var(--carte);
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+.carte .kcal {
+  font-size: 1.2rem;
+  text-align: center;
+}
+.carte .kcal strong {
+  font-size: 2.2rem;
+  color: var(--vert);
+}
+.carte .macros {
   display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 12px;
+  text-align: center;
+}
+.carte .macros div {
+  background: var(--vert-clair);
+  border-radius: 12px;
+  padding: 10px 4px;
+}
+.carte .macros strong {
+  display: block;
+  font-size: 1.25rem;
+}
+.carte .macros span {
+  font-size: 0.85rem;
+  color: var(--gris);
+}
+.carte .detail {
+  font-size: 0.85rem;
+  color: var(--gris);
+  margin: 12px 0 0;
+  text-align: center;
+}
+.carte .vide {
+  margin: 0;
+  text-align: center;
+  color: var(--gris);
+}
+
+/* ---- Formulaires ---- */
+.formulaire {
+  display: grid;
+  gap: 6px;
+}
+.formulaire label {
+  font-weight: 600;
+  margin-top: 10px;
+}
+/* 16px minimum : sinon Safari zoome sur le champ quand on le touche */
+input,
+select {
+  font: inherit;
+  font-size: 1.1rem;
+  width: 100%;
+  min-height: 52px;
+  padding: 12px 14px;
+  border: 1px solid var(--bordure);
+  border-radius: 12px;
+  background: var(--carte);
+  color: var(--texte);
+}
+input:focus,
+select:focus {
+  outline: 2px solid var(--vert);
+  border-color: var(--vert);
+}
+.ligne {
+  display: grid;
+  grid-template-columns: 1fr 110px;
+  align-items: center;
   gap: 12px;
 }
-
-.verifs li {
-  background: #fff;
-  border-radius: 14px;
-  padding: 16px;
-  font-size: 1.05rem;
-  border-left: 6px solid #bbb;
+.ligne label {
+  margin: 0;
+  font-weight: 400;
+}
+.ligne input {
+  text-align: center;
 }
 
-.verifs li.ok {
-  border-left-color: var(--vert);
+/* Boutons à choix unique (sexe, objectif) */
+.choix {
+  display: flex;
+  gap: 8px;
+}
+.choix button,
+.bouton {
+  flex: 1;
+  font: inherit;
+  font-size: 1rem;
+  min-height: 52px;
+  border-radius: 12px;
+  border: 1px solid var(--bordure);
+  background: var(--carte);
+  color: var(--texte);
+}
+.choix button.actif {
+  background: var(--vert);
+  border-color: var(--vert);
+  color: #fff;
+  font-weight: 600;
+}
+.bouton {
+  width: 100%;
+  margin-top: 24px;
 }
 
-.verifs li.ko {
-  border-left-color: var(--rouge);
+/* ---- Barre d'onglets ---- */
+.onglets {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  background: var(--carte);
+  border-top: 1px solid var(--bordure);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.onglets button {
+  flex: 1;
+  height: var(--hauteur-onglets);
+  font: inherit;
+  font-size: 1rem;
+  border: none;
+  background: none;
+  color: var(--gris);
+}
+.onglets button.actif {
+  color: var(--vert);
+  font-weight: 700;
 }

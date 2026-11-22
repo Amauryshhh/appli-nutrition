@@ -15,15 +15,12 @@
     <title>Nutrition</title>
   </head>
   <body>
-    <main id="app">
-      <h1>Nutrition</h1>
-      <p class="sous-titre">Étape 1 : l'appli est installée.</p>
-      <ul class="verifs">
-        <li id="statut-db">Base de données : vérification…</li>
-        <li id="statut-sw">Mode hors ligne : vérification…</li>
-        <li id="statut-mode">Affichage : vérification…</li>
-      </ul>
-    </main>
+    <main id="vue"></main>
+    <!-- Barre d'onglets en bas : atteignable avec le pouce -->
+    <nav class="onglets">
+      <button data-onglet="profil">Profil</button>
+      <button data-onglet="parametres">Paramètres</button>
+    </nav>
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>

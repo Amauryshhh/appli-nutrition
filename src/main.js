@@ -1,35 +1,25 @@
 import './style.css';
 import { registerSW } from 'virtual:pwa-register';
-import { db } from './db.js';
+import { afficherProfil } from './vues/profil.js';
+import { afficherParametres } from './vues/parametres.js';
 
-function afficher(id, texte, ok) {
-  const el = document.getElementById(id);
-  el.textContent = texte;
-  el.className = ok ? 'ok' : 'ko';
+// Service worker (fourni par vite-plugin-pwa) : mode hors ligne + mises à jour automatiques.
+if ('serviceWorker' in navigator) registerSW({ immediate: true });
+
+const vues = {
+  profil: afficherProfil,
+  parametres: afficherParametres,
+};
+
+const conteneur = document.getElementById('vue');
+const boutons = document.querySelectorAll('.onglets button');
+
+function ouvrir(nom) {
+  boutons.forEach((b) => b.classList.toggle('actif', b.dataset.onglet === nom));
+  conteneur.innerHTML = '';
+  window.scrollTo(0, 0);
+  vues[nom](conteneur);
 }
 
-// 1. Vérifie que la base Dexie s'ouvre (IndexedDB disponible sur ce navigateur).
-db.open()
-  .then(() => afficher('statut-db', 'Base de données : prête ✓', true))
-  .catch((err) => afficher('statut-db', 'Base de données : erreur (' + err.message + ')', false));
-
-// 2. Enregistre le service worker (fourni par vite-plugin-pwa) pour le hors ligne.
-if ('serviceWorker' in navigator) {
-  registerSW({
-    immediate: true,
-    onOfflineReady: () => afficher('statut-sw', 'Mode hors ligne : prêt ✓', true),
-    onRegisteredSW: () => afficher('statut-sw', 'Mode hors ligne : actif ✓', true),
-    onRegisterError: () => afficher('statut-sw', 'Mode hors ligne : erreur', false),
-  });
-} else {
-  afficher('statut-sw', 'Mode hors ligne : non supporté ici', false);
-}
-
-// 3. Indique si l'appli tourne depuis l'écran d'accueil (PWA) ou dans Safari.
-const installee =
-  window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-afficher(
-  'statut-mode',
-  installee ? "Affichage : appli installée ✓" : 'Affichage : dans le navigateur',
-  installee,
-);
+boutons.forEach((b) => b.addEventListener('click', () => ouvrir(b.dataset.onglet)));
+ouvrir('profil');
