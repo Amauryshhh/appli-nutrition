@@ -4,7 +4,10 @@ import {
   enregistrerIngredient,
   supprimerIngredient,
   basculerFavori,
+  trouverParCodeCiqual,
 } from '../db.js';
+import { rechercherCiqual, alimentVersIngredient, SOURCE_CIQUAL } from '../calculs/ciqual.js';
+import { chargerCiqual } from '../services/ciqual.js';
 import {
   CATEGORIES,
   filtrerIngredients,
@@ -35,13 +38,18 @@ const etat = { recherche: '', filtre: 'tous' };
 export async function afficherIngredients(conteneur) {
   const tous = await listerIngredients();
 
-  const vue = html(`<section>
+  const vue = html(`<section class="page-avec-boutons">
     <h1>Ingrédients</h1>
     <input type="search" class="recherche" placeholder="Rechercher…" value="${echapper(etat.recherche)}" />
     <div class="pastilles">
       ${FILTRES.map(([v, l]) => `<button type="button" data-filtre="${v}" class="${v === etat.filtre ? 'actif' : ''}">${l}</button>`).join('')}
     </div>
-    <ul class="liste"></ul>
+    <ul class="liste" id="mes-ingredients"></ul>
+    <div id="bloc-ciqual" hidden>
+      <h2>Dans la table CIQUAL</h2>
+      <ul class="liste" id="resultats-ciqual"></ul>
+      <p class="note">Source : ${SOURCE_CIQUAL}.</p>
+    </div>
     <div class="actions-flottantes">
       <button type="button" class="bouton-flottant secondaire" id="scanner">Scanner</button>
       <button type="button" class="bouton-flottant" id="ajouter">+ Ajouter</button>
@@ -49,9 +57,36 @@ export async function afficherIngredients(conteneur) {
   </section>`);
   conteneur.append(vue);
 
-  const ul = vue.querySelector('.liste');
+  const ul = vue.querySelector('#mes-ingredients');
+  const blocCiqual = vue.querySelector('#bloc-ciqual');
+  const ulCiqual = vue.querySelector('#resultats-ciqual');
+  let alimentsCiqual = []; // résultats CIQUAL affichés (pour retrouver celui qu'on touche)
+  let numeroRecherche = 0; // ignore les réponses d'une recherche déjà dépassée
+
+  // Recherche dans CIQUAL : seulement avec le filtre « Tous » et au moins 2 lettres.
+  async function rafraichirCiqual() {
+    const numero = ++numeroRecherche;
+    const texte = etat.recherche.trim();
+    if (etat.filtre !== 'tous' || texte.length < 2) {
+      blocCiqual.hidden = true;
+      return;
+    }
+    const table = await chargerCiqual(); // téléchargée à la première recherche seulement
+    if (numero !== numeroRecherche) return; // l'utilisateur a continué à taper entre-temps
+    alimentsCiqual = rechercherCiqual(table, texte, 10);
+    blocCiqual.hidden = !table;
+    ulCiqual.innerHTML = alimentsCiqual.length
+      ? alimentsCiqual
+          .map((a, i) => `<li data-index="${i}">
+            <div class="infos"><strong>${echapper(a.nom)}</strong>
+            <span>${formaterNombre(a.kcal ?? '?')} kcal · ${formaterNombre(a.proteines ?? '?')} g prot. · ${echapper(a.groupe)}</span></div>
+            <span class="plus">+</span></li>`)
+          .join('')
+      : '<li class="vide">Aucun aliment CIQUAL trouvé.</li>';
+  }
 
   function rafraichir() {
+    rafraichirCiqual();
     const liste = filtrerIngredients(tous, etat);
     if (liste.length === 0) {
       ul.innerHTML = `<li class="vide">${
@@ -99,6 +134,22 @@ export async function afficherIngredients(conteneur) {
     ouvrirFiche(conteneur, id);
   });
 
+  // Aliment CIQUAL touché : sa fiche s'il est déjà dans ma base, sinon une fiche pré-remplie.
+  ulCiqual.addEventListener('click', async (e) => {
+    const li = e.target.closest('li[data-index]');
+    if (!li) return;
+    const aliment = alimentsCiqual[Number(li.dataset.index)];
+    const existant = await trouverParCodeCiqual(aliment.code);
+    if (existant) {
+      ouvrirFiche(conteneur, existant.id);
+      return;
+    }
+    ouvrirFiche(conteneur, null, {
+      initial: alimentVersIngredient(aliment),
+      message: 'Valeurs de la table CIQUAL (Anses) pour 100 g : vérifie la catégorie proposée, puis enregistre.',
+    });
+  });
+
   vue.querySelector('#ajouter').addEventListener('click', () => ouvrirFiche(conteneur, null));
   vue.querySelector('#scanner').addEventListener('click', () => ouvrirScan(conteneur));
 
@@ -119,7 +170,8 @@ export async function ouvrirFiche(conteneur, id, { initial = {}, message = '' } 
     ? await chargerIngredient(id)
     : { source: 'manuel', favori: false, exclu: false, ...initial };
   const nouveau = !id;
-  const titre = !nouveau ? 'Modifier' : ing.source === 'off' ? 'Produit trouvé' : 'Nouvel ingrédient';
+  const titres = { off: 'Produit trouvé', ciqual: 'Aliment CIQUAL' };
+  const titre = !nouveau ? 'Modifier' : (titres[ing.source] ?? 'Nouvel ingrédient');
 
   conteneur.innerHTML = '';
   window.scrollTo(0, 0);

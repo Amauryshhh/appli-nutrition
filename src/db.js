@@ -27,6 +27,13 @@ db.version(4).stores({
   // Une entrée par repas. Indexé par date (« AAAA-MM-JJ ») pour charger un jour rapidement.
   journal: '++id, date',
 });
+db.version(5).stores({
+  profil: 'id',
+  parametres: 'id',
+  // Nouvel index : codeCiqual, pour retrouver un aliment CIQUAL déjà ajouté (pas de doublon).
+  ingredients: '++id, nom, categorie, codeBarres, codeCiqual',
+  journal: '++id, date',
+});
 
 const ID_UNIQUE = 1;
 
@@ -117,4 +124,9 @@ export async function chargerObjectifs() {
 /** Ingrédient déjà enregistré avec ce code-barres (ou undefined). */
 export function trouverParCodeBarres(code) {
   return db.ingredients.where('codeBarres').equals(code).first();
+}
+
+/** Ingrédient déjà ajouté depuis cet aliment CIQUAL (ou undefined). */
+export function trouverParCodeCiqual(code) {
+  return db.ingredients.where('codeCiqual').equals(code).first();
 }

@@ -220,10 +220,16 @@ select:focus {
 .liste {
   list-style: none;
   margin: 0;
-  /* espace en bas pour que le bouton « + Ajouter » ne cache pas le dernier élément */
-  padding: 0 0 80px;
+  padding: 0;
   display: grid;
   gap: 8px;
+}
+/* espace en bas pour que les boutons flottants ne cachent pas le dernier élément */
+.page-avec-boutons {
+  padding-bottom: 80px;
+}
+#bloc-ciqual h2 {
+  margin-top: 24px;
 }
 .liste li {
   display: flex;
@@ -403,7 +409,7 @@ select:focus {
 .resultats {
   padding-bottom: 0;
 }
-.resultats .plus {
+.plus {
   width: 52px;
   text-align: center;
   font-size: 1.6rem;
