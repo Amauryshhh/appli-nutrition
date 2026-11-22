@@ -1,0 +1,55 @@
+/* Mobile d'abord : grosses tailles, marges pour l'encoche de l'iPhone. */
+:root {
+  --vert: #2e7d32;
+  --fond: #f4f7f2;
+  --texte: #1b1f1a;
+  --rouge: #c62828;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: var(--texte);
+  background: var(--fond);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: env(safe-area-inset-top) 16px env(safe-area-inset-bottom);
+  min-height: 100vh;
+}
+
+h1 {
+  color: var(--vert);
+  font-size: 2rem;
+  margin: 24px 0 4px;
+}
+
+.sous-titre {
+  font-size: 1.1rem;
+  margin: 0 0 24px;
+}
+
+.verifs {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 12px;
+}
+
+.verifs li {
+  background: #fff;
+  border-radius: 14px;
+  padding: 16px;
+  font-size: 1.05rem;
+  border-left: 6px solid #bbb;
+}
+
+.verifs li.ok {
+  border-left-color: var(--vert);
+}
+
+.verifs li.ko {
+  border-left-color: var(--rouge);
+}
