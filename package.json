@@ -8,7 +8,8 @@
     "build": "vite build",
     "preview": "vite preview --host",
     "icones": "node scripts/generer-icones.mjs",
-    "test": "vitest run"
+    "test": "vitest run",
+    "ciqual": "node scripts/convertir-ciqual.mjs"
   },
   "dependencies": {
     "@zxing/browser": "^0.2.1",
