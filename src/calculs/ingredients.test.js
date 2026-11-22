@@ -52,6 +52,7 @@ describe('validation', () => {
   });
   it('refuse les valeurs négatives et impossibles', () => {
     expect(validerIngredient({ ...riz, lipides: -1 })).toContain('Valeur négative : lipides.');
+    expect(validerIngredient({ ...riz, proteines: undefined })).toContain('Valeur manquante : protéines.');
     expect(validerIngredient({ ...riz, proteines: 50, glucides: 60 }).join()).toMatch(/dépassent 100 g/);
     expect(validerIngredient({ ...riz, sucres: 90 }).join()).toMatch(/sucres/);
   });

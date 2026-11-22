@@ -13,6 +13,17 @@ export const CATEGORIES = [
 export const NUTRIMENTS_OBLIGATOIRES = ['kcal', 'proteines', 'glucides', 'lipides'];
 export const NUTRIMENTS_OPTIONNELS = ['fibres', 'sucres'];
 
+// Noms affichés dans les messages d'erreur.
+const LIBELLES = {
+  kcal: 'énergie (kcal)',
+  proteines: 'protéines',
+  glucides: 'glucides',
+  lipides: 'lipides',
+  fibres: 'fibres',
+  sucres: 'sucres',
+  prixKg: 'prix au kg',
+};
+
 /**
  * Valeurs nutritionnelles pour une quantité donnée.
  * Règle de trois : valeur pour 100 g × grammes / 100.
@@ -59,10 +70,10 @@ export function validerIngredient(ing) {
   if (!ing.nom || !ing.nom.trim()) erreurs.push('Le nom est obligatoire.');
   if (!CATEGORIES.some(([c]) => c === ing.categorie)) erreurs.push('Choisis une catégorie.');
   for (const n of NUTRIMENTS_OBLIGATOIRES) {
-    if (typeof ing[n] !== 'number') erreurs.push(`Valeur manquante : ${n}.`);
+    if (typeof ing[n] !== 'number') erreurs.push(`Valeur manquante : ${LIBELLES[n]}.`);
   }
   for (const n of [...NUTRIMENTS_OBLIGATOIRES, ...NUTRIMENTS_OPTIONNELS, 'prixKg']) {
-    if (typeof ing[n] === 'number' && ing[n] < 0) erreurs.push(`Valeur négative : ${n}.`);
+    if (typeof ing[n] === 'number' && ing[n] < 0) erreurs.push(`Valeur négative : ${LIBELLES[n]}.`);
   }
   if (ing.kcal > 900) erreurs.push('Plus de 900 kcal pour 100 g, c\'est impossible.');
   const totalMacros = (ing.proteines ?? 0) + (ing.glucides ?? 0) + (ing.lipides ?? 0);
