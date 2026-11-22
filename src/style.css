@@ -419,3 +419,115 @@ select:focus {
 [hidden] {
   display: none !important;
 }
+
+/* ---- Écran Jour ---- */
+.entete-jour {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 8px;
+}
+.entete-jour h1 {
+  margin: 12px 0;
+  font-size: 1.5rem;
+  text-align: center;
+}
+.fleche {
+  width: 52px;
+  height: 52px;
+  font-size: 2rem;
+  line-height: 1;
+  border: none;
+  border-radius: 26px;
+  background: var(--carte);
+  color: var(--vert);
+}
+.lien-aujourdhui {
+  display: block;
+  margin: -4px auto 12px;
+  font: inherit;
+  min-height: 40px;
+  border: none;
+  background: none;
+  color: var(--vert);
+  text-decoration: underline;
+}
+.progression {
+  display: grid;
+  gap: 12px;
+}
+.barre-texte {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.95rem;
+  margin-bottom: 4px;
+}
+.barre {
+  height: 12px;
+  border-radius: 6px;
+  background: var(--vert-clair);
+  overflow: hidden;
+}
+.remplissage {
+  height: 100%;
+  border-radius: 6px;
+  background: var(--vert);
+  transition: width 0.3s;
+}
+.remplissage.trop {
+  background: #e65100;
+}
+.reste {
+  margin: 4px 0 0;
+  line-height: 1.5;
+}
+.groupe-repas {
+  margin-top: 18px;
+}
+.titre-groupe {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.titre-groupe h2 {
+  margin: 0;
+  flex: 1;
+  color: var(--texte);
+}
+.titre-groupe span {
+  color: var(--gris);
+  font-size: 0.95rem;
+}
+.ajouter {
+  width: 48px;
+  height: 48px;
+  border-radius: 24px;
+  border: none;
+  background: var(--vert);
+  color: #fff;
+  font-size: 1.6rem;
+  line-height: 1;
+}
+.liste.repas {
+  padding-bottom: 0;
+}
+.liste.repas .infos strong {
+  white-space: normal;
+  font-weight: 500;
+}
+.kcal-repas {
+  flex: none;
+  padding: 0 10px;
+  font-weight: 600;
+}
+.non-valide {
+  opacity: 0.6;
+}
+.badge {
+  justify-self: start;
+  font-size: 0.8rem;
+  padding: 2px 8px;
+  border-radius: 8px;
+  background: var(--vert-clair);
+}

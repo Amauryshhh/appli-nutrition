@@ -40,14 +40,14 @@ export function formaterReste(reste) {
   const morceau = (valeur, unite) => {
     const n = Math.round(valeur);
     return n < 0
-      ? `<span class="depasse">${-n} ${unite} en trop</span>`
-      : `<span>${n} ${unite}</span>`;
+      ? `<span class="depasse">${-n}&nbsp;${unite} en&nbsp;trop</span>`
+      : `<span>${n}&nbsp;${unite}</span>`;
   };
   return [
     morceau(reste.kcal, 'kcal'),
-    morceau(reste.proteines, 'g P'),
-    morceau(reste.glucides, 'g G'),
-    morceau(reste.lipides, 'g L'),
+    morceau(reste.proteines, 'g&nbsp;P'),
+    morceau(reste.glucides, 'g&nbsp;G'),
+    morceau(reste.lipides, 'g&nbsp;L'),
   ].join(' · ');
 }
 
