@@ -550,7 +550,12 @@ select:focus {
   background: #000;
   aspect-ratio: 4 / 3;
 }
-.camera video {
+/* La vidéo et le canvas se superposent exactement (position absolue = hauteur fiable sur iOS).
+   Le canvas, dessiné par-dessus, sert d'aperçu : sur iPhone la <video> reste parfois noire. */
+.camera video,
+.camera canvas {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;

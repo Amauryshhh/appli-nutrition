@@ -18,6 +18,8 @@ export async function ouvrirScan(conteneur) {
     <div class="camera">
       <!-- playsinline + muted : indispensables sur iPhone, sinon la vidéo s'ouvre en plein écran ou ne démarre pas -->
       <video playsinline muted autoplay></video>
+      <!-- Aperçu redessiné à la main (voir dessinerApercu) : contourne l'écran noir de la vidéo sur iPhone -->
+      <canvas></canvas>
       <div class="viseur"></div>
     </div>
     <p class="note" id="etat-camera">Démarrage de la caméra…</p>
@@ -36,10 +38,35 @@ export async function ouvrirScan(conteneur) {
   const message = $('#message');
   let controles = null; // pour arrêter la caméra
   let enCours = false; // évite de traiter deux fois le même code
+  let animation = null; // boucle de dessin de l'aperçu
 
   function arreterCamera() {
+    if (animation) cancelAnimationFrame(animation);
+    animation = null;
     controles?.stop();
     controles = null;
+  }
+
+  /**
+   * Aperçu de la caméra dessiné sur un <canvas>, à chaque rafraîchissement d'écran.
+   * Sur iPhone (appli installée), la balise <video> affiche parfois un écran noir alors
+   * que les images arrivent bien : ZXing les lit justement en les copiant sur un canvas.
+   * On fait donc pareil pour l'affichage.
+   */
+  function dessinerApercu(video, canvas) {
+    const contexte = canvas.getContext('2d');
+    const boucle = () => {
+      // readyState ≥ 2 : la vidéo a une image disponible
+      if (video.readyState >= 2 && video.videoWidth) {
+        if (canvas.width !== video.videoWidth) {
+          canvas.width = video.videoWidth; // résolution du canvas = celle de la caméra
+          canvas.height = video.videoHeight;
+        }
+        contexte.drawImage(video, 0, 0);
+      }
+      animation = requestAnimationFrame(boucle);
+    };
+    boucle();
   }
   surDepart(arreterCamera); // arrêt automatique si on change d'onglet
 
@@ -138,6 +165,7 @@ export async function ouvrirScan(conteneur) {
     }
     controles = ctrl;
     surDepart(arreterCamera); // ré-enregistré au cas où un essai manuel l'aurait déjà consommé
+    dessinerApercu(video, $('canvas'));
     etat.textContent = 'Place le code-barres dans le cadre.';
   } catch (erreur) {
     etat.textContent =
