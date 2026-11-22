@@ -13,6 +13,13 @@ db.version(2).stores({
   profil: 'id',
   parametres: 'id', // un seul jeu de coefficients, id = 1
 });
+db.version(3).stores({
+  profil: 'id',
+  parametres: 'id',
+  // « ++id » : numéro attribué automatiquement. Les autres champs listés sont indexés
+  // (recherche rapide). Les champs non listés (kcal, favori…) sont quand même enregistrés.
+  ingredients: '++id, nom, categorie, codeBarres',
+});
 
 const ID_UNIQUE = 1;
 
@@ -47,4 +54,29 @@ export async function enregistrerParametres(params) {
 
 export async function reinitialiserParametres() {
   await db.parametres.delete(ID_UNIQUE);
+}
+
+// ---- Ingrédients ----
+
+export function listerIngredients() {
+  return db.ingredients.toArray();
+}
+
+export function chargerIngredient(id) {
+  return db.ingredients.get(id);
+}
+
+/** Ajoute (sans id) ou remplace (avec id) un ingrédient. Renvoie son id. */
+export function enregistrerIngredient(ingredient) {
+  return db.ingredients.put(ingredient);
+}
+
+export function supprimerIngredient(id) {
+  return db.ingredients.delete(id);
+}
+
+export async function basculerFavori(id) {
+  const ing = await db.ingredients.get(id);
+  await db.ingredients.update(id, { favori: !ing.favori });
+  return !ing.favori;
 }
