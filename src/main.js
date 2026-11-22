@@ -2,11 +2,13 @@ import './style.css';
 import { registerSW } from 'virtual:pwa-register';
 import { afficherProfil } from './vues/profil.js';
 import { afficherParametres } from './vues/parametres.js';
+import { afficherIngredients } from './vues/ingredients.js';
 
 // Service worker (fourni par vite-plugin-pwa) : mode hors ligne + mises à jour automatiques.
 if ('serviceWorker' in navigator) registerSW({ immediate: true });
 
 const vues = {
+  ingredients: afficherIngredients,
   profil: afficherProfil,
   parametres: afficherParametres,
 };

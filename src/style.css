@@ -180,3 +180,168 @@ select:focus {
   color: var(--vert);
   font-weight: 700;
 }
+
+/* ---- Écran Ingrédients ---- */
+.recherche {
+  margin-bottom: 10px;
+}
+
+/* Pastilles de filtre : défilement horizontal au doigt */
+.pastilles {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+  margin: 0 -16px 8px;
+  padding-left: 16px;
+  padding-right: 16px;
+  scrollbar-width: none;
+}
+.pastilles::-webkit-scrollbar {
+  display: none;
+}
+.pastilles button {
+  flex: none;
+  font: inherit;
+  font-size: 0.95rem;
+  min-height: 40px;
+  padding: 0 14px;
+  border-radius: 20px;
+  border: 1px solid var(--bordure);
+  background: var(--carte);
+  color: var(--texte);
+}
+.pastilles button.actif {
+  background: var(--vert);
+  border-color: var(--vert);
+  color: #fff;
+}
+
+.liste {
+  list-style: none;
+  margin: 0;
+  /* espace en bas pour que le bouton « + Ajouter » ne cache pas le dernier élément */
+  padding: 0 0 80px;
+  display: grid;
+  gap: 8px;
+}
+.liste li {
+  display: flex;
+  align-items: center;
+  background: var(--carte);
+  border-radius: 14px;
+  padding: 6px 6px 6px 16px;
+  min-height: 64px;
+}
+.liste li.vide {
+  justify-content: center;
+  color: var(--gris);
+  padding: 24px 16px;
+  text-align: center;
+}
+.liste .infos {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+}
+.liste .infos strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.liste .infos span {
+  font-size: 0.9rem;
+  color: var(--gris);
+}
+.etoile {
+  flex: none;
+  width: 52px;
+  height: 52px;
+  font-size: 1.6rem;
+  border: none;
+  background: none;
+  color: var(--gris);
+}
+.etoile.actif {
+  color: #f9a825;
+}
+
+/* Gros bouton « + Ajouter » au-dessus de la barre d'onglets, sous le pouce */
+.bouton-flottant {
+  position: fixed;
+  right: 16px;
+  bottom: calc(var(--hauteur-onglets) + env(safe-area-inset-bottom) + 16px);
+  font: inherit;
+  font-size: 1.1rem;
+  font-weight: 600;
+  min-height: 56px;
+  padding: 0 24px;
+  border-radius: 28px;
+  border: none;
+  background: var(--vert);
+  color: #fff;
+  box-shadow: 0 4px 12px rgb(0 0 0 / 0.2);
+}
+
+/* ---- Fiche ingrédient ---- */
+.retour {
+  font: inherit;
+  font-size: 1rem;
+  min-height: 44px;
+  margin-top: 12px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--vert);
+}
+.retour + h1 {
+  margin-top: 4px;
+}
+.choix-multi {
+  flex-wrap: wrap;
+}
+.choix-multi button {
+  flex: 1 1 30%;
+}
+.formulaire small {
+  font-weight: 400;
+  color: var(--gris);
+}
+.case {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 400 !important;
+  margin-top: 20px !important;
+}
+.case input {
+  width: 26px;
+  min-height: 26px;
+  height: 26px;
+  flex: none;
+}
+.avertissement {
+  background: #fff8e1;
+  border-left: 5px solid #f9a825;
+  border-radius: 10px;
+  padding: 12px;
+  margin: 8px 0 0;
+}
+.erreurs {
+  background: #ffebee;
+  border-left: 5px solid #c62828;
+  border-radius: 10px;
+  padding: 12px 12px 12px 32px;
+  margin: 16px 0 0;
+}
+.bouton.principal {
+  background: var(--vert);
+  border-color: var(--vert);
+  color: #fff;
+  font-weight: 600;
+}
+.bouton.danger {
+  margin-top: 12px;
+  color: #c62828;
+  border-color: #c62828;
+}
