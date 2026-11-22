@@ -20,6 +20,13 @@ db.version(3).stores({
   // (recherche rapide). Les champs non listés (kcal, favori…) sont quand même enregistrés.
   ingredients: '++id, nom, categorie, codeBarres',
 });
+db.version(4).stores({
+  profil: 'id',
+  parametres: 'id',
+  ingredients: '++id, nom, categorie, codeBarres',
+  // Une entrée par repas. Indexé par date (« AAAA-MM-JJ ») pour charger un jour rapidement.
+  journal: '++id, date',
+});
 
 const ID_UNIQUE = 1;
 
@@ -79,4 +86,24 @@ export async function basculerFavori(id) {
   const ing = await db.ingredients.get(id);
   await db.ingredients.update(id, { favori: !ing.favori });
   return !ing.favori;
+}
+
+// ---- Journal (repas) ----
+
+/** Tous les repas d'un jour (« AAAA-MM-JJ »). */
+export function repasDuJour(date) {
+  return db.journal.where('date').equals(date).toArray();
+}
+
+export function chargerRepas(id) {
+  return db.journal.get(id);
+}
+
+/** Ajoute (sans id) ou remplace (avec id) un repas. Renvoie son id. */
+export function enregistrerRepas(repas) {
+  return db.journal.put(repas);
+}
+
+export function supprimerRepas(id) {
+  return db.journal.delete(id);
 }
