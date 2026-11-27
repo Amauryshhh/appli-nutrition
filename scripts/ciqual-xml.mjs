@@ -8,7 +8,7 @@
 // des expressions régulières suffisent.
 import { categorieDepuisGroupe } from '../src/calculs/ciqual.js';
 
-// Codes des constituants utilisés (table CIQUAL 2020). Le script affiche leurs noms
+// Codes des constituants utilisés (tables CIQUAL 2020 et 2025). Le script affiche leurs noms
 // lus dans const_*.xml pour qu'on vérifie que ce sont bien les bons.
 export const CONSTITUANTS = {
   kcal: '328', // Energie, Règlement UE N° 1169/2011 (kcal/100 g)

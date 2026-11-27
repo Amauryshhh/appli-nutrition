@@ -1,9 +1,10 @@
 // Table CIQUAL (Anses) : choix de la catégorie, conversion en ingrédient, recherche.
-// Source des données : Anses, Table de composition nutritionnelle des aliments Ciqual 2020
-// (Licence Ouverte : réutilisation libre en citant la source).
+// Source des données : Anses, Table de composition nutritionnelle des aliments Ciqual 2025
+// (Licence Etalab 2.0 : réutilisation libre en citant la source).
+// Fichiers XML : https://entrepot.recherche.data.gouv.fr (DOI 10.57745/RDMHWY).
 import { normaliserTexte } from './ingredients.js';
 
-export const SOURCE_CIQUAL = 'Anses, table de composition nutritionnelle des aliments Ciqual 2020';
+export const SOURCE_CIQUAL = 'Anses, table de composition nutritionnelle des aliments Ciqual 2025';
 
 /**
  * Catégorie proposée d'après le groupe et le sous-groupe CIQUAL (comparaison sans accents).
@@ -12,6 +13,10 @@ export const SOURCE_CIQUAL = 'Anses, table de composition nutritionnelle des ali
  * et une banane n'a pas sa place comme « légume » d'un plat.
  */
 const REGLES = [
+  // Produits céréaliers qui ne sont pas le féculent d'un plat (vérifié sur la table Ciqual 2025).
+  { si: ['biscuits', 'petit-dejeuner', 'pates a tarte', 'farines', 'infantiles'], categorie: 'autre' },
+  // Avant les protéines : sinon « huiles de poissons » serait classé protéine.
+  { si: ['huiles', 'matieres grasses'], categorie: 'sauce' },
   { si: ['pommes de terre', 'legumineuses'], categorie: 'feculent' },
   { si: ['fruits a coque', 'oleagineux'], categorie: 'autre' },
   { si: ['legumes'], categorie: 'legume' },
@@ -19,7 +24,7 @@ const REGLES = [
   // (« fruits, légumes, légumineuses… ») et serait classé féculent.
   { si: ['fruits'], categorie: 'autre' },
   { si: ['viandes', 'poissons', 'oeufs', 'charcuteries', 'mollusques', 'crustaces'], categorie: 'proteine' },
-  { si: ['sauces', 'condiments', 'matieres grasses', 'epices', 'herbes'], categorie: 'sauce' },
+  { si: ['sauces', 'condiments', 'epices', 'herbes'], categorie: 'sauce' },
   { si: ['pates, riz', 'cereales', 'pains', 'produits cerealiers'], categorie: 'feculent' },
 ];
 

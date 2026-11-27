@@ -16,6 +16,14 @@ describe('catégorie d\'après le groupe CIQUAL', () => {
     ['aides culinaires et ingrédients divers', 'sauces', 'sauce'],
     ['matières grasses', 'huiles et graisses végétales', 'sauce'],
     ['produits laitiers et assimilés', 'fromages et assimilés', 'autre'],
+    // Cas repérés sur la vraie table Ciqual 2025 :
+    ['matières grasses', 'huiles de poissons', 'sauce'],
+    ['produits céréaliers', 'biscuits apéritifs', 'autre'],
+    ['produits céréaliers', 'pâtes à tarte', 'autre'],
+    ['produits céréaliers', 'farines', 'autre'],
+    ['produits sucrés', 'céréales de petit-déjeuner', 'autre'],
+    ['aliments infantiles', 'céréales et biscuits infantiles', 'autre'],
+    ['viandes, oeufs, poissons et assimilés', 'poissons cuits', 'proteine'],
     ['', '', 'autre'],
   ];
   for (const [groupe, sousGroupe, attendu] of cas) {

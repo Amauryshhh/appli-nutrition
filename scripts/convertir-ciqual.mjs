@@ -1,7 +1,8 @@
 // Conversion (une seule fois) de la table CIQUAL XML en public/ciqual.json.
 //
-// 1. Télécharger le zip XML sur https://ciqual.anses.fr (ou via data.gouv.fr)
-// 2. Le décompresser dans donnees/ciqual/ (dossier ignoré par Git)
+// 1. Télécharger les fichiers XML alim_, alim_grp_, compo_ et const_ de la table Ciqual 2025 sur
+//    Recherche Data Gouv : https://entrepot.recherche.data.gouv.fr (DOI 10.57745/RDMHWY)
+// 2. Les placer dans donnees/ciqual/ (dossier ignoré par Git)
 // 3. Lancer : npm run ciqual
 //
 // Le script affiche un rapport à vérifier (nombre d'aliments, noms des constituants utilisés).
@@ -13,7 +14,7 @@ import { SOURCE_CIQUAL } from '../src/calculs/ciqual.js';
 const dossier = process.argv[2] ?? 'donnees/ciqual';
 const sortie = 'public/ciqual.json';
 
-// Trouve le fichier dont le nom commence par le préfixe (ex. « alim_2020_07_07.xml »).
+// Trouve le fichier dont le nom commence par le préfixe (ex. « alim_2025_11_03.xml »).
 // « alim_grp_ » commence aussi par « alim_ » : on l'exclut explicitement.
 function trouver(prefixe, exclure) {
   const fichiers = readdirSync(dossier).filter(
